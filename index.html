@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>title</title>
+        <link rel="stylesheet" href="linkToCSS" />
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        
+            <div id="wrapper">
+                <div class="parent">
+                    <div id="main">
+                        <canvas>
+                        
+                    </canvas>
+                </div>
+
+                    
+                </div>
+            </div>  
+
+
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.0/gsap.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.0/ScrollTrigger.min.js"></script>
+
+
+        <script>
+            
+            const canvas=document.querySelector("canvas")
+            const context=canvas.getContext("2d")
+            const frames={
+                currentIndex:0,
+                maxIndex:382
+            }
+            let imageLoaded=0
+            const images=[]
+            function preLoad(){
+                for(var i=1;i<=frames.maxIndex;i++){
+                    const imageUrl=`./frames/frame_${i.toString().padStart(4,"0")}.jpeg`
+                    const img=new Image()
+                    img.src=imageUrl
+                    img.onload=()=>{
+                        imageLoaded++;
+                        if(imageLoaded===frames.maxIndex){
+                            loadImages(frames.currentIndex)
+                            startAnimation()
+                        }
+                    }
+                    images.push(img)
+            }
+            }
+            
+
+            function loadImages(index){
+                if(index>=0 && index<=frames.maxIndex){
+                    const img=images[index]
+                    canvas.width=window.innerWidth
+                    canvas.height=window.innerHeight
+                    
+                    const scaleX=canvas.width/img.width
+                    const scaleY=canvas.height/img.height
+                    const scale=Math.max(scaleX,scaleY)
+                    
+                    const newWidth=img.width * scale
+                    const newHeight=img.height * scale
+
+                    const offSetX=(canvas.width-newWidth)/2
+                    const offSety=(canvas.height-newHeight)/2
+
+                    context.clearRect(0,0,canvas.width,canvas.height)
+                    context.imageSmoothingEnabled=true
+                    context.imageSmoothingQuality="high"
+                    context.drawImage(img,offSetX,offSety,newWidth,newHeight)
+                    frames.currentIndex=index
+
+                }
+            }
+
+            function startAnimation(){
+                var tl=gsap.timeline({
+                    scrollTrigger:{
+                        trigger:".parent",
+                        start:"top top",
+                        scrub:2,
+                        end:"bottom bottom ",
+                        
+                    }
+                })
+                tl.to(frames,{
+                    currentIndex:frames.maxIndex,
+                    onUpdate:function(){
+                        loadImages(Math.floor(frames.currentIndex))
+                    }
+                })
+            }
+
+
+            preLoad()
+            
+
+
+        </script>
+
+    </body>
+</html>
