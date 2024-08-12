@@ -12,4 +12,5 @@ main: The primary branch for the project
 dev: A development branch for testing and experimentation
 
 Author
-Ketan Sharma
+Ketan Sharmaa
+
